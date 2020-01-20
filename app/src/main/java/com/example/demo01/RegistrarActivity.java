@@ -22,17 +22,18 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class RegistrarActivity extends AppCompatActivity {
 
-    EditText mNombres, mApellidos, mEmail, mUsuario, mClave;
+    EditText mNombres, mApellidos, mEmail, mClave, mRepetirClave;
     Button mRegistrar;
 
     String nombres = "";
     String apellidos = "";
     String email = "";
-    String usuario = "";
     String clave = "";
+    String repetirClave;
 
     FirebaseAuth mAuth;
     FirebaseFirestore db;
@@ -50,9 +51,9 @@ public class RegistrarActivity extends AppCompatActivity {
         mNombres = (EditText)findViewById(R. id.txtNombres);
         mApellidos = (EditText)findViewById(R. id.txtApellidos);
         mEmail = (EditText)findViewById(R. id.txtEmail);
-        mUsuario = (EditText)findViewById(R. id.txtEmail);
         mClave = (EditText)findViewById(R. id.txtClave);
         mRegistrar = (Button)findViewById(R. id.btnRegistrar);
+        mRepetirClave = (EditText)findViewById(R. id.txtRepetirClave);
 
         mRegistrar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,12 +61,18 @@ public class RegistrarActivity extends AppCompatActivity {
                 nombres = mNombres.getText().toString();
                 apellidos = mApellidos.getText().toString();
                 email = mEmail.getText().toString();
-                usuario = mUsuario.getText().toString();
                 clave = mClave.getText().toString();
+                repetirClave = mRepetirClave.getText().toString();
 
-                if(!nombres.isEmpty() && !apellidos.isEmpty() && !email.isEmpty() && !usuario.isEmpty() && !clave.isEmpty()){
+                if(!nombres.isEmpty() && !apellidos.isEmpty() && !email.isEmpty() && !clave.isEmpty()){
                     if(clave.length() >= 6){
-                        registrarUsuario();
+                        if(clave.equals(repetirClave)){
+                            mRegistrar.setEnabled(false);
+                            registrarUsuario();
+                        } else {
+                            Toast.makeText(RegistrarActivity.this, "Las claves no coinciden.", Toast.LENGTH_SHORT).show();
+                            mRegistrar.setEnabled(true);
+                        }
                     } else {
                         Toast.makeText(RegistrarActivity.this, "la clave debe tener como minimo 6 digitos", Toast.LENGTH_SHORT).show();
                     }
@@ -82,7 +89,7 @@ public class RegistrarActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    String id = mAuth.getCurrentUser().getUid();
+                    String id = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
                     Map<String, Object> user = new HashMap<>();
                     user.put("idPadre", id);
                     user.put("nombres", nombres);

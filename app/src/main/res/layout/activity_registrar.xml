@@ -58,11 +58,11 @@
         android:id="@+id/btnRegistrar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="15dp"
         android:text="REGISTRAR"
-        app:layout_constraintEnd_toEndOf="@+id/txtClave"
-        app:layout_constraintStart_toStartOf="@+id/txtClave"
-        app:layout_constraintTop_toBottomOf="@+id/txtClave" />
+        app:layout_constraintEnd_toEndOf="@+id/txtRepetirClave"
+        app:layout_constraintStart_toStartOf="@+id/txtRepetirClave"
+        app:layout_constraintTop_toBottomOf="@+id/txtRepetirClave" />
 
     <TextView
         android:id="@+id/textView4"
@@ -74,5 +74,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/txtRepetirClave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:ems="10"
+        android:hint="REPETIR CLAVE"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="@+id/txtClave"
+        app:layout_constraintStart_toStartOf="@+id/txtClave"
+        app:layout_constraintTop_toBottomOf="@+id/txtClave" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

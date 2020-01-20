@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
         android:ems="10"
-        android:hint="Ingresa tu email"
+        android:hint="Ingrese email"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
         android:ems="10"
-        android:hint="Ingresa tu clave"
+        android:hint="Ingrese contraseña"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -56,20 +56,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="¿Olvidaste tu clave?"
+        android:text="¿Olvidaste tu contraseña?"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnIngresar" />
 
-    <Button
-        android:id="@+id/btnCrearCuenta"
+    <TextView
+        android:id="@+id/txtRegistrar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="25dp"
-        android:text="Crear una cuenta"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_marginTop="10dp"
+        android:text="¿No tienes cuenta? Registrate"
+        app:layout_constraintEnd_toEndOf="@+id/txtRecuperar"
+        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintStart_toStartOf="@+id/txtRecuperar"
+        app:layout_constraintTop_toBottomOf="@+id/txtRecuperar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

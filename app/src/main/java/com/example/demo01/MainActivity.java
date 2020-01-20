@@ -16,13 +16,15 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity {
 
      EditText mtxtEmail, mtxtClave;
-     TextView mtxtRecuperar;
-     Button mbtnIngresar, mbtnCrear;
+     TextView mtxtRecuperar, mtxtRegistrar;
+     Button mbtnIngresar;
+
 
      String email = "";
      String clave = "";
@@ -35,43 +37,77 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        alInicio();
+
         FirebaseApp.initializeApp(MainActivity.this);
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+
 
         mtxtEmail = (EditText) findViewById(R. id.txtEmail);
         mtxtClave = (EditText) findViewById(R. id.txtClave);
         mtxtRecuperar = (TextView) findViewById(R. id.txtRecuperar);
 
         mbtnIngresar = (Button) findViewById(R. id.btnIngresar);
-        mbtnCrear = (Button) findViewById(R. id.btnCrearCuenta);
+        mtxtRegistrar = (TextView) findViewById(R. id.txtRegistrar);
+
+
 
         mbtnIngresar.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+
                 email = mtxtEmail.getText().toString();
                 clave = mtxtClave.getText().toString();
-                mAuth.signInWithEmailAndPassword(email,clave).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-                            startActivity(new Intent(MainActivity.this, InicioActivity.class));
-                            finish();
-                            Toast.makeText(MainActivity.this, "Bienvenido "+email, Toast.LENGTH_SHORT).show();
-                        }else{
-                            Toast.makeText(MainActivity.this, "No se pudo iniciar sesion", Toast.LENGTH_SHORT).show();
+
+                if(!email.isEmpty() && !clave.isEmpty()){
+                    mbtnIngresar.setEnabled(false);
+                    mAuth.signInWithEmailAndPassword(email,clave).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if(task.isSuccessful()){
+                                startActivity(new Intent(MainActivity.this, InicioActivity.class));
+                                finish();
+                                Toast.makeText(MainActivity.this, "Bienvenido "+email, Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(MainActivity.this, "No se pudo iniciar sesion", Toast.LENGTH_SHORT).show();
+                                mbtnIngresar.setEnabled(true);
+                            }
                         }
-                    }
-                });
+                    });
+                } else {
+                    Toast.makeText(MainActivity.this, "Rellene todos los campos", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
-        mbtnCrear.setOnClickListener(new View.OnClickListener() {
+        mtxtRegistrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent( MainActivity.this, RegistrarActivity.class);
                 startActivity(i);
             }
         });
+
+        mtxtRecuperar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this, RecuperarCuentaActivity.class);
+                startActivity(i);
+            }
+        });
+    }
+
+    private void alInicio(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            // User is signed in
+            startActivity(new Intent(MainActivity.this, InicioActivity.class));
+            Toast.makeText(this, "Bienvenido", Toast.LENGTH_SHORT).show();
+            finish();
+        } else {
+            // No user is signed in
+            Toast.makeText(this, "Hola, inicia sesion!! o crea una cuenta.", Toast.LENGTH_SHORT).show();
+        }
     }
 }
