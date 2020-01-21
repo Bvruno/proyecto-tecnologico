@@ -1,15 +1,17 @@
-package com.example.demo01;
+package com.example.demo01.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.demo01.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -17,8 +19,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,8 +30,8 @@ import java.util.Objects;
 
 public class RegistrarActivity extends AppCompatActivity {
 
-    EditText mNombres, mApellidos, mEmail, mClave, mRepetirClave;
-    Button mRegistrar;
+    private EditText mNombres, mApellidos, mEmail, mClave, mRepetirClave;
+    private Button mRegistrar;
 
     String nombres = "";
     String apellidos = "";
@@ -83,43 +87,54 @@ public class RegistrarActivity extends AppCompatActivity {
         });
 
     }
+
     private void registrarUsuario(){
+        mAuth.createUserWithEmailAndPassword(email, clave)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            String id = Objects.requireNonNull(user).getUid();
+                            agregarDatos(id);
+                            //Toast.makeText(RegistrarActivity.this, "Usuario creado.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(RegistrarActivity.this, "No se pudo registrar este usuario, intentelo nuevamente", Toast.LENGTH_SHORT).show();
+                            mRegistrar.setEnabled(true);
+                        }
+                    }
+                });
+    }
 
-        mAuth.createUserWithEmailAndPassword(email,clave).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
-                    String id = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
-                    Map<String, Object> user = new HashMap<>();
-                    user.put("idPadre", id);
-                    user.put("nombres", nombres);
-                    user.put("apellidos", apellidos);
-                    user.put("email", email);
-                    user.put("clave", clave);
+    private void agregarDatos(String id){
+        // Add a new document with a generated id.
+        //Toast.makeText(RegistrarActivity.this, "agregando datos.", Toast.LENGTH_SHORT).show();
+        Map<String, Object> data = new HashMap<>();
+        data.put("idPadre", id);
+        data.put("nombres", nombres);
+        data.put("apellidos", apellidos);
+        data.put("email", email);
+        data.put("clave", clave);
 
-                    db.collection("usuarioPadre")
-                            .add(user)
-                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                @Override
-                                public void onSuccess(DocumentReference documentReference) {
-                                    //Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                                    startActivity(new Intent(RegistrarActivity.this, InicioActivity.class));
-                                    finish();
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    //Log.w(TAG, "Error adding document", e);
-                                }
-                            });
-                }
-                else{
-                    Toast.makeText(RegistrarActivity.this, "No se pudo registrar este usuario, intentelo nuevamente", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
+        db.collection("usuarioPadre").document(id+"")
+                .set(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        //Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+                        Toast.makeText(RegistrarActivity.this, "Datos agregados", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(RegistrarActivity.this, InicioActivity.class));
+                        finish();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        //Log.w(TAG, "Error adding document", e);
+                        Toast.makeText(RegistrarActivity.this, "Error al agregar los datos", Toast.LENGTH_SHORT).show();
+                        mRegistrar.setEnabled(true);
+                    }
+                });
 
     }
 }

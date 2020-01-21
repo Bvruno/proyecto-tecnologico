@@ -1,4 +1,4 @@
-package com.example.demo01;
+package com.example.demo01.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.demo01.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
@@ -24,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
      EditText mtxtEmail, mtxtClave;
      TextView mtxtRecuperar, mtxtRegistrar;
      Button mbtnIngresar;
-
 
      String email = "";
      String clave = "";
@@ -43,15 +43,12 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-
         mtxtEmail = (EditText) findViewById(R. id.txtEmail);
         mtxtClave = (EditText) findViewById(R. id.txtClave);
         mtxtRecuperar = (TextView) findViewById(R. id.txtRecuperar);
 
         mbtnIngresar = (Button) findViewById(R. id.btnIngresar);
         mtxtRegistrar = (TextView) findViewById(R. id.txtRegistrar);
-
-
 
         mbtnIngresar.setOnClickListener(new View.OnClickListener(){
             @Override

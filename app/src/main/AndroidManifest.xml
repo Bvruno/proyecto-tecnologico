@@ -9,17 +9,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".FamiliarSeccionadoActivity"></activity>
-        <activity android:name=".ActividadSeleccionadaActivity" />
-        <activity android:name=".EditarPerfilActivity" />
-        <activity android:name=".NuevoFamiliarActivity" />
-        <activity android:name=".NuevaActividadActivity" />
-        <activity android:name=".FamiliaActivity" />
-        <activity android:name=".PerfilActivity" />
-        <activity android:name=".RecuperarCuentaActivity" />
-        <activity android:name=".RegistrarActivity" />
-        <activity android:name=".InicioActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".activities.FamiliarSeccionadoActivity"></activity>
+        <activity android:name=".activities.ActividadSeleccionadaActivity" />
+        <activity android:name=".activities.EditarPerfilActivity" />
+        <activity android:name=".activities.NuevoFamiliarActivity" />
+        <activity android:name=".activities.NuevaActividadActivity" />
+        <activity android:name=".activities.FamiliaActivity" />
+        <activity android:name=".activities.PerfilActivity" />
+        <activity android:name=".activities.RecuperarCuentaActivity" />
+        <activity android:name=".activities.RegistrarActivity" />
+        <activity android:name=".activities.InicioActivity" />
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -1,14 +1,16 @@
-package com.example.demo01;
+package com.example.demo01.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-public class EditarPerfilActivity extends AppCompatActivity {
+import com.example.demo01.R;
+
+public class FamiliarSeccionadoActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_editar_perfil);
+        setContentView(R.layout.activity_familiar_seccionado);
     }
 }
