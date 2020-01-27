@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.demo01.R;
@@ -26,9 +27,9 @@ public class PerfilActivity extends AppCompatActivity {
 
         mbtnCerrarSesion = (Button) findViewById(R. id.btnCerrarSesion);
 
-        Button mbtnActividad = (Button) findViewById(R.id.btnActividad);
-        Button mbtnFamilia = (Button) findViewById(R.id.btnFamilia);
-        Button mbtnPerfil = (Button) findViewById(R.id.btnPerfil);
+        ImageButton mbtnActividad = findViewById(R.id.btnActividad);
+        ImageButton mbtnFamilia = findViewById(R.id.btnFamilia);
+        ImageButton mbtnPerfil = findViewById(R.id.btnPerfil);
 
         mbtnCerrarSesion.setOnClickListener(new View.OnClickListener() {
             @Override

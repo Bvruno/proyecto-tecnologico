@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.example.demo01.Actividad;
@@ -28,7 +29,8 @@ import javax.annotation.Nullable;
 
 public class InicioActivity extends AppCompatActivity {
 
-     Button mbtnPerfil, mbtnFamilia, mbtnActividad, mbtnCrearActividad;
+     Button mbtnCrearActividad;
+     ImageButton mbtnFamilia, mbtnPerfil, mbtnActividad;
      RecyclerView rv;
 
     List<Actividad> actividades;
@@ -48,9 +50,9 @@ public class InicioActivity extends AppCompatActivity {
 
         mbtnCrearActividad = (Button) findViewById(R. id.btnCrearActivdad);
 
-        mbtnActividad = (Button) findViewById(R. id.btnActividad);
-        mbtnFamilia = (Button) findViewById(R. id.btnFamilia);
-        mbtnPerfil = (Button) findViewById(R. id.btnPerfil);
+        mbtnActividad = findViewById(R. id.btnActividad);
+        mbtnFamilia = findViewById(R. id.btnFamilia);
+        mbtnPerfil = findViewById(R. id.btnPerfil);
 
         rv = (RecyclerView)findViewById(R. id.rvActividades);
         rv.setLayoutManager(new LinearLayoutManager(InicioActivity.this));

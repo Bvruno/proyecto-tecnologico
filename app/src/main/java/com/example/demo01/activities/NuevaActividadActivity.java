@@ -3,6 +3,7 @@ package com.example.demo01.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -25,7 +26,7 @@ import java.util.Map;
 public class NuevaActividadActivity extends AppCompatActivity {
 
     EditText mtxtNombre, mtxtActividad, mtxtRecompensa;
-    Button mbtnCrear;
+    Button mbtnCrear,btnAgregarFoto;
     ImageView mimgActivdad;
 
     String nombre = "";
@@ -45,6 +46,7 @@ public class NuevaActividadActivity extends AppCompatActivity {
         mtxtRecompensa = (EditText) findViewById(R. id.txtDetalleRecompensa);
 
         mbtnCrear = (Button) findViewById(R. id.btnCrearActivdad);
+        btnAgregarFoto = findViewById(R.id.btnAgregarFoto);
 
         db = FirebaseFirestore.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -109,5 +111,11 @@ public class NuevaActividadActivity extends AppCompatActivity {
             }
         });
 
+        btnAgregarFoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(NuevaActividadActivity.this,tomarFotoActivity.class));
+            }
+        });
     }
 }

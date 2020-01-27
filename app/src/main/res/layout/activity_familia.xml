@@ -8,33 +8,90 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="0dp"
-        android:layout_height="60dp"
+        android:layout_width="410dp"
+        android:layout_height="93dp"
+        android:background="@drawable/navigation_bar"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <Button
-            android:id="@+id/btnPerfil"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Perfil" />
+        <FrameLayout
+            android:layout_width="110dp"
+            android:layout_height="75dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp">
 
-        <Button
-            android:id="@+id/btnActividad"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Actividades" />
+            <ImageButton
+                android:id="@+id/btnPerfil"
+                android:layout_width="match_parent"
+                android:layout_height="53dp"
+                android:background="@null"
+                android:scaleType="centerInside"
+                android:src="@drawable/perfil_button"></ImageButton>
 
-        <Button
-            android:id="@+id/btnFamilia"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="familia" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="17dp"
+                android:layout_gravity="bottom"
+                android:clickable="false"
+                android:fontFamily="serif"
+                android:text="Perfil"
+                android:textAlignment="center"></TextView>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="150dp"
+            android:layout_height="75dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp">
+
+            <ImageButton
+                android:id="@+id/btnActividad"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@null"
+                android:scaleType="centerInside"
+                android:src="@drawable/activity_button"></ImageButton>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="17dp"
+                android:layout_gravity="bottom"
+                android:clickable="false"
+                android:fontFamily="serif"
+                android:text="Actividad"
+                android:textAlignment="center"></TextView>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="110dp"
+            android:layout_height="75dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp">
+
+            <ImageButton
+                android:id="@+id/btnFamilia"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@null"
+                android:scaleType="centerInside"
+                android:src="@drawable/family_button"></ImageButton>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="17dp"
+                android:layout_gravity="bottom"
+                android:clickable="false"
+                android:fontFamily="serif"
+                android:text="Familia"
+                android:textAlignment="center"></TextView>
+        </FrameLayout>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
