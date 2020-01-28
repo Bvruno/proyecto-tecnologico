@@ -1,4 +1,4 @@
-package com.example.demo01.activities;
+package com.example.demo01.activities.familia;
 
 import androidx.appcompat.app.AppCompatActivity;
 

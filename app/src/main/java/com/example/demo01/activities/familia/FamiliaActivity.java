@@ -1,14 +1,15 @@
-package com.example.demo01.activities;
+package com.example.demo01.activities.familia;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.example.demo01.R;
+import com.example.demo01.activities.InicioActivity;
+import com.example.demo01.activities.perfil.PerfilActivity;
 
 public class FamiliaActivity extends AppCompatActivity {
 

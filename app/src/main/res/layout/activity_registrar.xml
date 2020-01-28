@@ -36,18 +36,32 @@
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
     <EditText
-        android:id="@+id/txtApellidos"
+        android:id="@+id/txtAPaterno"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:drawableRight="@drawable/ptext_person"
         android:ems="10"
         android:fontFamily="serif"
-        android:hint="Apellidos"
+        android:hint="Apellido Paterno"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="@+id/txtNombres"
         app:layout_constraintStart_toStartOf="@+id/txtNombres"
         app:layout_constraintTop_toBottomOf="@+id/txtNombres" />
+
+    <EditText
+        android:id="@+id/txtAMaterno"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:drawableRight="@drawable/ptext_person"
+        android:ems="10"
+        android:fontFamily="serif"
+        android:hint="Apellido Materno"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="@+id/txtAPaterno"
+        app:layout_constraintStart_toStartOf="@+id/txtAPaterno"
+        app:layout_constraintTop_toBottomOf="@+id/txtAPaterno" />
 
     <EditText
         android:id="@+id/txtEmail"
@@ -59,9 +73,9 @@
         android:fontFamily="serif"
         android:hint="Email"
         android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="@+id/txtApellidos"
-        app:layout_constraintStart_toStartOf="@+id/txtApellidos"
-        app:layout_constraintTop_toBottomOf="@+id/txtApellidos" />
+        app:layout_constraintEnd_toEndOf="@+id/txtAMaterno"
+        app:layout_constraintStart_toStartOf="@+id/txtAMaterno"
+        app:layout_constraintTop_toBottomOf="@+id/txtAMaterno" />
 
     <EditText
         android:id="@+id/txtClave"

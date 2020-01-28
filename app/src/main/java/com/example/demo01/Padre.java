@@ -5,5 +5,4 @@ public class Padre extends Usuario {
     String genero, funcion;
 
 
-
 }

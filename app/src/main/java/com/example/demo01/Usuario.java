@@ -2,18 +2,27 @@ package com.example.demo01;
 
 public class Usuario {
 
-    private String id, nombre, apellido, usuario, clave, email;
-    private int edad;
+    private String id, nombre, apaterno, amaterno , email, clave, edad;
 
-    public  Usuario(){}
+    public Usuario() {
+    }
 
-    public Usuario(String id, String nombre, String apellido, String usuario, String clave, String email, int edad) {
+    public Usuario(String id, String nombre, String apaterno, String amaterno, String email, String clave, String edad) {
         this.id = id;
         this.nombre = nombre;
-        this.apellido = apellido;
-        this.usuario = usuario;
-        this.clave = clave;
+        this.apaterno = apaterno;
+        this.amaterno = amaterno;
         this.email = email;
+        this.clave = clave;
+        this.edad = edad;
+    }
+
+    public Usuario(String nombre, String apaterno, String amaterno, String email, String clave, String edad) {
+        this.nombre = nombre;
+        this.apaterno = apaterno;
+        this.amaterno = amaterno;
+        this.email = email;
+        this.clave = clave;
         this.edad = edad;
     }
 
@@ -33,28 +42,20 @@ public class Usuario {
         this.nombre = nombre;
     }
 
-    public String getApellido() {
-        return apellido;
+    public String getApaterno() {
+        return apaterno;
     }
 
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
+    public void setApaterno(String apaterno) {
+        this.apaterno = apaterno;
     }
 
-    public String getUsuario() {
-        return usuario;
+    public String getAmaterno() {
+        return amaterno;
     }
 
-    public void setUsuario(String usuario) {
-        this.usuario = usuario;
-    }
-
-    public String getClave() {
-        return clave;
-    }
-
-    public void setClave(String clave) {
-        this.clave = clave;
+    public void setAmaterno(String amaterno) {
+        this.amaterno = amaterno;
     }
 
     public String getEmail() {
@@ -65,12 +66,19 @@ public class Usuario {
         this.email = email;
     }
 
-    public int getEdad() {
+    public String getClave() {
+        return clave;
+    }
+
+    public void setClave(String clave) {
+        this.clave = clave;
+    }
+
+    public String getEdad() {
         return edad;
     }
 
-    public void setEdad(int edad) {
+    public void setEdad(String edad) {
         this.edad = edad;
     }
-
 }
