@@ -4,13 +4,22 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.GlideUrl;
 import com.example.demo01.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -20,19 +29,36 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class EditarPerfilActivity extends AppCompatActivity {
 
-    Button mCancelar, mGuardar;
+    Button mCancelar, mGuardar, mCamara, mGaleria;
     EditText mNombres, mAPaterno, mAMaterno, mNacimiento;
+
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+    String currentPhotoPath;
+    static final int REQUEST_TAKE_PHOTO = 1;
+    int PICK_IMAGE_REQUEST = 111;
+    Uri filePath;
+
+    ImageView mImgPerfil;
 
     FirebaseAuth mAuth;
     FirebaseUser user;
     FirebaseFirestore db;
+    FirebaseStorage storage;
+    StorageReference storageRef;
+
+    //StorageReference imagesRef = storageRef.child("images");
 
     String nombres = "";
     String apaterno = "";
@@ -49,6 +75,8 @@ public class EditarPerfilActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
         db = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference();
 
         cargarDatos();
 
@@ -59,6 +87,10 @@ public class EditarPerfilActivity extends AppCompatActivity {
 
         mGuardar = (Button) findViewById(R.id.btnGuardar);
         mCancelar = (Button) findViewById(R.id.btnCancelar);
+        mCamara = (Button) findViewById(R.id.btnCamara);
+        mGaleria = (Button) findViewById(R.id.btnGaleria);
+
+        mImgPerfil = (ImageView) findViewById(R.id.imgPerfil);
 
         mGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,38 +106,106 @@ public class EditarPerfilActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        mCamara.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fotoCamara();
+            }
+        });
+
+        mGaleria.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fotoGaleria();
+            }
+        });
+    }
+
+    private void fotoCamara(){
+
+    }
+
+    private void fotoGaleria(){
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        //intent.setAction(Intent.ACTION_PICK);
+        startActivityForResult(Intent.createChooser(intent, "Seleccionar Imagen"), PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            filePath = data.getData();
+
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+
+                mImgPerfil.setImageBitmap(bitmap);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void guardarDatos(){
         String uid = user.getUid();
 
-        Map<String, Object> data = new HashMap<>();
-        //data.put("idPadre", id);
-        data.put("nombres", mNombres.getText().toString());
-        data.put("apellidoPaterno", mAPaterno.getText().toString());
-        data.put("apellidoMaterno", mAMaterno.getText().toString());
-        data.put("nacimiento",mNacimiento.getText().toString());
+        mImgPerfil.setDrawingCacheEnabled(true);
+        mImgPerfil.buildDrawingCache();
+        Bitmap bitmap = ((BitmapDrawable) mImgPerfil.getDrawable()).getBitmap();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos);
+        byte[] dataimg = baos.toByteArray();
+
+        StorageReference mountainsRef = storageRef.child("imagen/"+uid+"/perfil.jpg");
+
+        UploadTask uploadTask = mountainsRef.putBytes(dataimg);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                String uid = user.getUid();
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                Map<String, Object> data = new HashMap<>();
+                //data.put("idPadre", id);
+                data.put("nombres", mNombres.getText().toString());
+                data.put("apellidoPaterno", mAPaterno.getText().toString());
+                data.put("apellidoMaterno", mAMaterno.getText().toString());
+                data.put("nacimiento",mNacimiento.getText().toString());
+
+                db.collection("usuarioPadre").document(uid+"")
+                        .set(data, SetOptions.merge())
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                //Log.d(TAG, "DocumentSnapshot successfully updated!");
+                                Toast.makeText(EditarPerfilActivity.this, "Guardado", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(EditarPerfilActivity.this, PerfilActivity.class));
+                                finish();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(EditarPerfilActivity.this, "No se pudo guardar", Toast.LENGTH_SHORT).show();
+                                //Log.w(TAG, "Error updating document", e);
+                            }
+                        });
+            }
+        });
+
         //data.put("email", email);
         //data.put("clave", clave);
         //data.put("fechaCreacion", new Timestamp(new Date()));
-        db.collection("usuarioPadre").document(uid+"")
-                .set(data, SetOptions.merge())
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        //Log.d(TAG, "DocumentSnapshot successfully updated!");
-                        Toast.makeText(EditarPerfilActivity.this, "Guardado", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(EditarPerfilActivity.this, PerfilActivity.class));
-                        finish();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(EditarPerfilActivity.this, "No se pudo guardar", Toast.LENGTH_SHORT).show();
-                        //Log.w(TAG, "Error updating document", e);
-                    }
-                });
+
     }
 
     private void cargarDatos(){
@@ -132,6 +232,25 @@ public class EditarPerfilActivity extends AppCompatActivity {
                         } else {
                             Toast.makeText(EditarPerfilActivity.this, "Error"+documentSnapshot, Toast.LENGTH_SHORT).show();
                         }
+                    }
+                });
+                //final File localFile = File.createTempFile("Images", "bmp");
+                storageRef.child("imagen/"+uid+"/perfil.jpg")
+                        .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        // Got the download URL for 'users/me/profile.png'
+                        //filePerfil = uri;
+                        //Bitmap bitmap = BitmapFactory.decodeFile(uri);
+                        Glide.with(EditarPerfilActivity.this).load(uri).into(mImgPerfil);
+
+                        //mImgPerfil.set(stringUri);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle any errors
+                        Toast.makeText(EditarPerfilActivity.this, "No se pudo cargar la foto de perfil", Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {
