@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.example.demo01.R;
@@ -14,6 +15,7 @@ import com.example.demo01.activities.perfil.PerfilActivity;
 public class FamiliaActivity extends AppCompatActivity {
 
     ImageButton mbtnPerfil, mbtnFamilia, mbtnActividad;
+    Button mCrearFamilia, mUnirseFamilia;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +26,9 @@ public class FamiliaActivity extends AppCompatActivity {
         mbtnFamilia = findViewById(R. id.btnFamilia);
         mbtnPerfil = findViewById(R. id.btnPerfil);
 
+        mCrearFamilia = findViewById(R.id.btnCrearFamilia);
+        mUnirseFamilia = findViewById(R.id.btnUnirseFamilia);
+
         mbtnActividad.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -32,18 +37,26 @@ public class FamiliaActivity extends AppCompatActivity {
             }
         });
 
-//        mbtnFamilia.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(FamiliaActivity.this, FamiliaActivity.class));
-//                finish();
-//            }
-//        });
-
         mbtnPerfil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(FamiliaActivity.this, PerfilActivity.class));
+                finish();
+            }
+        });
+
+        mCrearFamilia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(FamiliaActivity.this, CrearFamiliaActivity.class));
+                finish();
+            }
+        });
+
+        mUnirseFamilia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(FamiliaActivity.this, UnirseAFamiliaActivity.class));
                 finish();
             }
         });

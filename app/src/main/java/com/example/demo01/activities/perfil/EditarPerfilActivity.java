@@ -38,6 +38,7 @@ import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class EditarPerfilActivity extends AppCompatActivity {
 
@@ -45,10 +46,11 @@ public class EditarPerfilActivity extends AppCompatActivity {
     EditText mNombres, mAPaterno, mAMaterno, mNacimiento;
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
-    String currentPhotoPath;
-    static final int REQUEST_TAKE_PHOTO = 1;
-    int PICK_IMAGE_REQUEST = 111;
+    static final int REQUEST_TAKE_PHOTO = 2;
+    static final int PICK_IMAGE_REQUEST = 3;
     Uri filePath;
+
+    String currentPhotoPath;
 
     ImageView mImgPerfil;
 
@@ -123,13 +125,13 @@ public class EditarPerfilActivity extends AppCompatActivity {
     }
 
     private void fotoCamara(){
-
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(Intent.createChooser(intent,""),REQUEST_TAKE_PHOTO);
     }
 
     private void fotoGaleria(){
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
-        //intent.setAction(Intent.ACTION_PICK);
         startActivityForResult(Intent.createChooser(intent, "Seleccionar Imagen"), PICK_IMAGE_REQUEST);
     }
 
@@ -137,16 +139,25 @@ public class EditarPerfilActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+        if (requestCode == PICK_IMAGE_REQUEST) {
             filePath = data.getData();
-
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                mImgPerfil.setImageBitmap(bitmap);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } else if (requestCode == REQUEST_TAKE_PHOTO) {
+            filePath = data.getData();
+            try {
+                Bitmap bitmap = (Bitmap) Objects.requireNonNull(data.getExtras()).get("data");
 
                 mImgPerfil.setImageBitmap(bitmap);
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
         }
     }
 
