@@ -94,7 +94,7 @@ public class CrearFamiliaActivity extends AppCompatActivity {
                 if(!nombre.isEmpty() && !descripcion.isEmpty() && !clave.isEmpty()) {
                     crearFamilia(data);
                 } else {
-                    Toast.makeText(CrearFamiliaActivity.this, "Tiene que poner un Nombre, Descripcion y Clave a su familia.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CrearFamiliaActivity.this, "Tiene que poner un Nombre, Descripcion y Clave a su Familia.", Toast.LENGTH_SHORT).show();
                 }
             }
         });

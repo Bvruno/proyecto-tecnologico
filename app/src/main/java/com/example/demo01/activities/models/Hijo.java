@@ -1,4 +1,4 @@
-package com.example.demo01;
+package com.example.demo01.activities.models;
 
 public class Hijo extends Usuario {
 

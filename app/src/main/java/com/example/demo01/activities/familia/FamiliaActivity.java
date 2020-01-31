@@ -1,6 +1,7 @@
 package com.example.demo01.activities.familia;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ public class FamiliaActivity extends AppCompatActivity {
 
     ImageButton mbtnPerfil, mbtnFamilia, mbtnActividad;
     Button mCrearFamilia, mUnirseFamilia;
+    RecyclerView mrcvFamiliares;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +27,8 @@ public class FamiliaActivity extends AppCompatActivity {
         mbtnActividad = findViewById(R. id.btnActividad);
         mbtnFamilia = findViewById(R. id.btnFamilia);
         mbtnPerfil = findViewById(R. id.btnPerfil);
+
+        mrcvFamiliares = findViewById(R.id.rcvFamiliares);
 
         mCrearFamilia = findViewById(R.id.btnCrearFamilia);
         mUnirseFamilia = findViewById(R.id.btnUnirseFamilia);

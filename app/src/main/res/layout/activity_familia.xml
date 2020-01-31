@@ -94,44 +94,38 @@
         </FrameLayout>
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btnCrearFamilia"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="CREAR FAMILIA"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-        app:layout_constraintEnd_toStartOf="@+id/divider"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/btnUnirseFamilia"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="UNIRSE A UNA FAMILIA"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/divider" />
-
-    <View
-        android:id="@+id/divider"
-        android:layout_width="1dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btnUnirseFamilia" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcvFamiliares"
-        android:layout_width="409dp"
-        android:layout_height="588dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="1dp"
         android:layout_marginTop="1dp"
         android:layout_marginEnd="1dp"
-        android:layout_marginBottom="1dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnCrearFamilia"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/btnCrearFamilia"
+            android:layout_width="209dp"
+            android:layout_height="wrap_content"
+            android:text="CREAR FAMILIA" />
+
+        <Button
+            android:id="@+id/btnUnirseFamilia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="UNIRSE A UNA FAMILIA" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
