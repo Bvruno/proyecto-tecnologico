@@ -69,7 +69,7 @@ public class Adapter_familia extends RecyclerView.Adapter<Adapter_familia.ViewHo
 
         public void bind(final Familia familia, final OnItemClickListener listener){
 
-            this.mnombreFamilia.setText(familia.getNombreFamilia());
+            this.mnombreFamilia.setText(familia.getNombre());
             //Picasso.get().load(familia.getImagenFamilia()).fit().into(mImgFamilia);
 
             itemView.setOnClickListener(new View.OnClickListener() {

@@ -6,22 +6,31 @@ import android.widget.ImageView;
 public class Familia {
 
     private int id;
-    private String nombreFamilia, descripcionFamilia;
+    private String nombre, descripcion, clave;
     private Uri imagenFamilia;
 
     public Familia() {
     }
 
-    public Familia(int id, String nombreFamilia, String descripcionFamilia, Uri imagenFamilia) {
-        this.id = id;
-        this.nombreFamilia = nombreFamilia;
-        this.descripcionFamilia = descripcionFamilia;
-        this.imagenFamilia = imagenFamilia;
+    public String getClave() {
+        return clave;
     }
 
-    public Familia(String nombreFamilia, String descripcionFamilia) {
-        this.nombreFamilia = nombreFamilia;
-        this.descripcionFamilia = descripcionFamilia;
+    public void setClave(String clave) {
+        this.clave = clave;
+    }
+
+    public Familia(String nombre, String descripcion) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+    }
+
+    public Familia(int id, String nombre, String descripcion, String clave, Uri imagenFamilia) {
+        this.id = id;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.clave = clave;
+        this.imagenFamilia = imagenFamilia;
     }
 
     public int getId() {
@@ -32,20 +41,20 @@ public class Familia {
         this.id = id;
     }
 
-    public String getNombreFamilia() {
-        return nombreFamilia;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setNombreFamilia(String nombreFamilia) {
-        this.nombreFamilia = nombreFamilia;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public String getDescripcionFamilia() {
-        return descripcionFamilia;
+    public String getDescripcion() {
+        return descripcion;
     }
 
-    public void setDescripcionFamilia(String descripcionFamilia) {
-        this.descripcionFamilia = descripcionFamilia;
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
     public Uri getImagenFamilia() {

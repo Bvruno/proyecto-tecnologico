@@ -19,6 +19,7 @@ import com.example.demo01.R;
 import com.example.demo01.activities.perfil.PerfilActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -132,9 +133,9 @@ public class CrearFamiliaActivity extends AppCompatActivity {
 
                         byte[] dataimg = baos.toByteArray();
 
-                        StorageReference mountainsRef = storageRef.child("grupofamiliar/"+uidFamilia+"/portada.jpg");
+                        final StorageReference imagenRef = storageRef.child("grupofamiliar/"+uidFamilia+"/portada.jpg");
 
-                        UploadTask uploadTask = mountainsRef.putBytes(dataimg);
+                        final UploadTask uploadTask = imagenRef.putBytes(dataimg);
                         uploadTask.addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception exception) {
@@ -143,8 +144,8 @@ public class CrearFamiliaActivity extends AppCompatActivity {
                         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                                agregarDatoFamilia(uidFamilia);
+                                String uriImagen = imagenRef.getDownloadUrl().toString();
+                                agregarDatoFamilia(uidFamilia, uriImagen);
 
                             }
                         });
@@ -198,6 +199,7 @@ public class CrearFamiliaActivity extends AppCompatActivity {
 
     private void agregarIntegranteFamilia(String uidFamilia, String uid){
         final DocumentReference grupoFamiiaRef = db.collection("grupoFamiliar").document(uidFamilia+"");
+
         final DocumentReference integranteFamiliaRef = grupoFamiiaRef.collection("miembros").document(uid+"");
 
         Map<String, Object> nestedData = new HashMap<>();

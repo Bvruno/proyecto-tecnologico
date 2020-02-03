@@ -7,24 +7,34 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.SearchView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.demo01.R;
 import com.example.demo01.activities.models.Familia;
 import com.example.demo01.adapters.Adapter_familia;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,19 +42,14 @@ import java.util.Objects;
 
 public class UnirseAFamiliaActivity extends AppCompatActivity {
 
-    private List<Familia> familias;
-
     RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    RecyclerView.LayoutManager mLayoutManager;
 
     FirebaseAuth mAuth;
     FirebaseUser user;
     FirebaseFirestore db;
     FirebaseStorage storage;
     StorageReference storageRef;
-
-    private int counter = 0;
+    FirestoreRecyclerAdapter familiaAdapter;
 
     SearchView mbuscarFamilia;
     Button mbtnCancelar;
@@ -59,26 +64,8 @@ public class UnirseAFamiliaActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
-        cargarDatosFamilias();
-        //familias = this.getAllFamilias();
 
         mRecyclerView = findViewById(R.id.rcvFamilias);
-        mLayoutManager = new LinearLayoutManager(this);
-
-        mAdapter = new Adapter_familia(familias, R.layout.recycler_familia_item, new Adapter_familia.OnItemClickListener() {
-            @Override
-            public void onItemClick(Familia familia, int position) {
-                removeFamilia(position);
-            }
-        });
-
-        mRecyclerView.setHasFixedSize(true);
-        // Añade un efecto por defecto, si le pasamos null lo desactivamos por completo
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-
-        // Enlazamos el layout manager y adaptor directamente al recycler view
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(mAdapter);
 
         mbuscarFamilia = findViewById(R.id.scFamilias);
         mbtnCancelar = findViewById(R.id.btnCancelar);
@@ -90,47 +77,58 @@ public class UnirseAFamiliaActivity extends AppCompatActivity {
             }
         });
 
+        Query query = db.collection("grupoFamiliar");
+
+        FirestoreRecyclerOptions<Familia> familiaOptions = new FirestoreRecyclerOptions.Builder<Familia>()
+                .setQuery(query, Familia.class)
+                .build();
+
+        familiaAdapter = new FirestoreRecyclerAdapter<Familia, FamiliaViewHolder>(familiaOptions) {
+            @NonNull
+            @Override
+            public FamiliaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_familia_item, parent,false);
+                return new FamiliaViewHolder(view);
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull FamiliaViewHolder familiaViewHolder, int i, @NonNull Familia familia) {
+                familiaViewHolder.nombre_item.setText(familia.getNombre());
+                familiaViewHolder.clave_item.setText(familia.getClave());
+                familiaViewHolder.descripcion_item.setText(familia.getDescripcion());
+                Picasso.get().load(familia.getImagenFamilia()).into((Target) familiaViewHolder.imagen_item);
+            }
+        };
+
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setAdapter(familiaAdapter);
+
     }
 
-    private void cargarDatosFamilias(){
+    private class FamiliaViewHolder extends RecyclerView.ViewHolder{
 
-        familias = new ArrayList<>();
-        db.collection("grupoFamiliar")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                                Log.d("RefFamilias", document.getId() + " => " + document.getData());
-                                String nombre = document.getString("nombre");
-                                String descripcion = document.getString("descripcion");
-                                familias.add(new Familia(nombre,descripcion));
-                                //Log.d("",familias.toString()+"");
+        private TextView nombre_item, clave_item, descripcion_item, imagen_item;
 
-                            }
-                        } else {
-                            Log.d("", "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
+        FamiliaViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            nombre_item = itemView.findViewById(R.id.txtNombreFamilia);
+            clave_item = itemView.findViewById(R.id.btnUnirse);
+            imagen_item = itemView.findViewById(R.id.imgFamilia);
+        }
     }
 
-    private List<Familia> getAllFamilias(){
-        return new ArrayList<Familia>(){{
-
-        }};
+    @Override
+    protected void onStop() {
+        super.onStop();
+        familiaAdapter.stopListening();
     }
 
-//    private void addFamilia(int position){
-//        familias.add(position, new Familia("we"+(++counter), R.drawable.perfil_button));
-//        mAdapter.notifyItemInserted(position);
-//        mLayoutManager.scrollToPosition(position);
-//    }
-
-    private void removeFamilia(int position){
-        familias.remove(position);
-        mAdapter.notifyItemRemoved(position);
+    @Override
+    protected void onStart() {
+        super.onStart();
+        familiaAdapter.startListening();
     }
 
     private void cancelar(){
