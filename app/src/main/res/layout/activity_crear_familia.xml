@@ -6,6 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".activities.familia.CrearFamiliaActivity">
 
+    <ImageView
+        android:id="@+id/imageView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/bg" />
+
     <TextView
         android:id="@+id/textView7"
         android:layout_width="0dp"
@@ -13,6 +26,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
+        android:fontFamily="serif"
         android:text="CREA A TU FAMILIA Y EMPIEZA A AGREGAR A TUS FAMILIARES O A LOS QUE VIVEN CONTIGO"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintEnd_toEndOf="parent"
@@ -35,8 +49,10 @@
 
     <TextView
         android:id="@+id/textView8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="298dp"
+        android:layout_height="25dp"
+        android:drawableRight="@drawable/ptext_camera"
+        android:fontFamily="serif"
         android:text="AGREGA UNA IMAGEN A TU FAMILIA"
         app:layout_constraintBottom_toBottomOf="@+id/imgFamilia"
         app:layout_constraintEnd_toEndOf="@+id/imgFamilia"
@@ -50,6 +66,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
+        android:fontFamily="serif"
         android:text="A CONTINUACION ESCRIBE UNA BREVE DESCRIPCION DE TU FAMILIA"
         app:layout_constraintEnd_toEndOf="@+id/imgFamilia"
         app:layout_constraintStart_toStartOf="@+id/imgFamilia"
@@ -57,12 +74,15 @@
 
     <EditText
         android:id="@+id/txtNombreFamilia"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="270dp"
+        android:layout_height="49dp"
         android:layout_marginTop="8dp"
+        android:drawableRight="@drawable/ptext_familyface"
         android:ems="10"
+        android:fontFamily="serif"
         android:hint="NOMBRA A TU FAMILIA"
         android:inputType="textPersonName"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="@+id/textView7"
         app:layout_constraintStart_toStartOf="@+id/textView7"
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
@@ -73,7 +93,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        android:drawableRight="@drawable/ptext_activityname"
         android:ems="10"
+        android:fontFamily="serif"
         android:gravity="start|top"
         android:inputType="textMultiLine"
         app:layout_constraintBottom_toTopOf="@+id/textView2"
@@ -84,8 +106,10 @@
 
     <Button
         android:id="@+id/btnCrearFamilia"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:background="@drawable/primary_button"
+        android:fontFamily="serif"
         android:text="CREAR"
         app:layout_constraintBottom_toTopOf="@+id/btnCancelar"
         app:layout_constraintEnd_toEndOf="parent"
@@ -93,8 +117,10 @@
 
     <Button
         android:id="@+id/btnCancelar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:background="@drawable/primary_button"
+        android:fontFamily="serif"
         android:text="CANCELAR"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -105,7 +131,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:drawableRight="@drawable/ptext_lock"
         android:ems="10"
+        android:fontFamily="serif"
         android:inputType="numberPassword"
         app:layout_constraintBottom_toTopOf="@+id/btnCrearFamilia"
         app:layout_constraintEnd_toEndOf="@+id/txtDescripcionFamilia"
@@ -116,6 +144,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:fontFamily="serif"
         android:text="INGRESA UNA CLAVE NUMERICA UNICA Y NO SE LA DIGAS A NADIE, CON ESTA CLAVE PODRAS AGREGAR A LOS DEMAS INTEGRANTES Y ES IMPORTANTE QUE SEA SECRETA."
         app:layout_constraintBottom_toTopOf="@+id/txtClaveFamiliar"
         app:layout_constraintEnd_toEndOf="@+id/txtDescripcionFamilia"
