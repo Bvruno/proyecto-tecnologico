@@ -1,11 +1,5 @@
 package com.example.demo01.activities.familia;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,33 +8,32 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.demo01.R;
+import com.example.demo01.activities.dialog.ClaveDialog;
 import com.example.demo01.activities.models.Familia;
-import com.example.demo01.adapters.Adapter_familia;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-public class UnirseAFamiliaActivity extends AppCompatActivity {
+public class UnirseAFamiliaActivity extends AppCompatActivity implements ClaveDialog.ClaveDialogListener{
 
     RecyclerView mRecyclerView;
 
@@ -54,10 +47,12 @@ public class UnirseAFamiliaActivity extends AppCompatActivity {
     SearchView mbuscarFamilia;
     Button mbtnCancelar;
 
+    String mClaveDialog = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_unirse_afamilia);
+        setContentView(R.layout.activity_lista_familias);
 
         mAuth = FirebaseAuth.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -92,12 +87,33 @@ public class UnirseAFamiliaActivity extends AppCompatActivity {
             }
 
             @Override
-            protected void onBindViewHolder(@NonNull FamiliaViewHolder familiaViewHolder, int i, @NonNull Familia familia) {
+            protected void onBindViewHolder(@NonNull final FamiliaViewHolder familiaViewHolder, final int i, @NonNull final Familia familia) {
                 familiaViewHolder.nombre_item.setText(familia.getNombre());
                 familiaViewHolder.clave_item.setText(familia.getClave());
-                familiaViewHolder.descripcion_item.setText(familia.getDescripcion());
-                Picasso.get().load(familia.getImagenFamilia()).into((Target) familiaViewHolder.imagen_item);
+                final String uidFamilia = familia.getIdFamilia();
+                final String claveFamilia = familia.getClave();
+
+                storageRef.child("grupofamiliar/"+familia.getIdFamilia()+"/portada.jpg")
+                        .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        final String uriFamilia = uri.toString();
+                        Log.d("",uri+"");
+                        Glide.with(UnirseAFamiliaActivity.this).load(uri).into(familiaViewHolder.imagen_item);
+                    }
+                });
+
+                familiaViewHolder.imagen_item.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Bundle args = new Bundle();
+                        Intent i = new Intent(UnirseAFamiliaActivity.this, FamiliaSeccionadaActivity.class);
+                        i.putExtra("Familia",familia.getNombre());
+                        startActivity(i);
+                    }
+                });
             }
+
         };
 
         mRecyclerView.setHasFixedSize(true);
@@ -106,17 +122,45 @@ public class UnirseAFamiliaActivity extends AppCompatActivity {
 
     }
 
+    private void openDialog(){
+        ClaveDialog claveDialog = new ClaveDialog();
+        claveDialog.show(getSupportFragmentManager(), "ClaveDialogo");
+    }
+
+    @Override
+    public void onDialogAction(String clave, String claveRecivido) {
+        mClaveDialog = clave ;
+
+
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        Toast.makeText(this, "AQUIIIII", Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+
+    }
+
     private class FamiliaViewHolder extends RecyclerView.ViewHolder{
 
-        private TextView nombre_item, clave_item, descripcion_item, imagen_item;
+        private TextView nombre_item, clave_item;
+        private ImageView imagen_item;
+        //private Button unirse_item;
 
-        FamiliaViewHolder(@NonNull View itemView) {
+        FamiliaViewHolder(@NonNull final View itemView) {
             super(itemView);
 
             nombre_item = itemView.findViewById(R.id.txtNombreFamilia);
             clave_item = itemView.findViewById(R.id.btnUnirse);
             imagen_item = itemView.findViewById(R.id.imgFamilia);
+            //unirse_item = itemView.findViewById(R.id.btnUnirse);
+
         }
+
     }
 
     @Override

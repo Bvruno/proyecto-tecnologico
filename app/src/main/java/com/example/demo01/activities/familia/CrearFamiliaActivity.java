@@ -34,6 +34,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class CrearFamiliaActivity extends AppCompatActivity {
 
@@ -73,30 +74,63 @@ public class CrearFamiliaActivity extends AppCompatActivity {
         mImgFamilia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    agregarImagen();
+                agregarImagen();
             }
         });
 
         mCrearFamilia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String uid = user.getUid();
+                final String uid = user.getUid();
+                //REFERENCIA Y UID DEL GRUPO FAMILIAR
+                final DocumentReference grupoFamiliaRef = db.collection("grupoFamiliar").document();
+                final String uidGrupoFamiliar = grupoFamiliaRef.getId();
+                //REFERENCIA DE ALMACENAMIENTO
+                final StorageReference imagenRef = storageRef.child("grupofamiliar/"+uidGrupoFamiliar+"/portada.jpg");
 
-                String nombre = mNombreFamilia.getText().toString();
-                String descripcion = mDescripcionFamilia.getText().toString();
-                String clave = mClaveFamilia.getText().toString();
+                //COMBIRTIENDO LA IMAGEN EN BIT
+                mImgFamilia.setDrawingCacheEnabled(true);
+                mImgFamilia.buildDrawingCache();
 
-                Map<String, Object> data = new HashMap<>();
-                data.put("nombre", nombre);
-                data.put("descripcion", descripcion);
-                data.put("clave",clave);
-                data.put("idCreador", uid);
+                Bitmap bitmap = ((BitmapDrawable) mImgFamilia.getDrawable()).getBitmap();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos);
 
-                if(!nombre.isEmpty() && !descripcion.isEmpty() && !clave.isEmpty()) {
-                    crearFamilia(data);
-                } else {
-                    Toast.makeText(CrearFamiliaActivity.this, "Tiene que poner un Nombre, Descripcion y Clave a su Familia.", Toast.LENGTH_SHORT).show();
-                }
+                byte[] dataimg = baos.toByteArray();
+                //SUBIENDO LA IMAGEN A FIRESTORE
+                final UploadTask uploadTask = imagenRef.putBytes(dataimg);
+                uploadTask.addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle unsuccessful uploads
+                    }
+                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                        String nombre = mNombreFamilia.getText().toString();
+                        String descripcion = mDescripcionFamilia.getText().toString();
+                        String clave = mClaveFamilia.getText().toString();
+                        String uriFamilia = uploadTask.getResult().toString();
+
+                        Map<String, Object> data = new HashMap<>();
+                        data.put("nombre", nombre);
+                        data.put("descripcion", descripcion);
+                        data.put("clave",clave);
+                        data.put("idCreador", uid);
+                        data.put("uriFamilia", uriFamilia);
+                        data.put("idFamilia", uidGrupoFamiliar);
+                        data.put("fecha", new Timestamp(new Date()));
+
+                        if(!nombre.isEmpty() && !descripcion.isEmpty() && !clave.isEmpty()) {
+                            crearFamilia(data, grupoFamiliaRef, uid, uidGrupoFamiliar);
+                        } else {
+                            Toast.makeText(CrearFamiliaActivity.this, "Tiene que poner un Nombre, Descripcion y Clave a su Familia.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+
             }
         });
 
@@ -112,44 +146,12 @@ public class CrearFamiliaActivity extends AppCompatActivity {
         fotoGaleria();
     }
 
-    private void crearFamilia(Map data){
-
-        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-
-        final DocumentReference grupoFamiiaRef = db.collection("grupoFamiliar").document();
-        final String uidFamilia = grupoFamiiaRef.getId();
-
-        grupoFamiiaRef.set(data)
+    private void crearFamilia(Map data, DocumentReference grupoFamiliaRef, final String uid, final String uidFamilia){
+        grupoFamiliaRef.set(data)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-
-                        mImgFamilia.setDrawingCacheEnabled(true);
-                        mImgFamilia.buildDrawingCache();
-
-                        Bitmap bitmap = ((BitmapDrawable) mImgFamilia.getDrawable()).getBitmap();
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos);
-
-                        byte[] dataimg = baos.toByteArray();
-
-                        final StorageReference imagenRef = storageRef.child("grupofamiliar/"+uidFamilia+"/portada.jpg");
-
-                        final UploadTask uploadTask = imagenRef.putBytes(dataimg);
-                        uploadTask.addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception exception) {
-                                // Handle unsuccessful uploads
-                            }
-                        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                String uriImagen = imagenRef.getDownloadUrl().toString();
-                                agregarDatoFamilia(uidFamilia, uriImagen);
-
-                            }
-                        });
-
+                        agregarIntegranteFamilia(uidFamilia, uid);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -173,47 +175,23 @@ public class CrearFamiliaActivity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent, "Seleccionar Imagen"), PICK_IMAGE_REQUEST);
     }
 
-    private void agregarDatoFamilia(final String uidFamilia){
-        Map<String, Object> nestedData = new HashMap<>();
-        nestedData.put("idFalimia", uidFamilia);
-
-        final String uid = user.getUid();
-
-        db.collection("usuarioPadre").document(uid+"")
-                .set(nestedData, SetOptions.merge())
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        //Log.d(TAG, "DocumentSnapshot successfully updated!");
-                        agregarIntegranteFamilia(uidFamilia, uid);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(CrearFamiliaActivity.this, "No se pudo guardar", Toast.LENGTH_SHORT).show();
-                        //Log.w(TAG, "Error updating document", e);
-                    }
-                });
-    }
-
     private void agregarIntegranteFamilia(String uidFamilia, String uid){
+        //CREANDO REFERENCIA A "MIEMBROS"
         final DocumentReference grupoFamiiaRef = db.collection("grupoFamiliar").document(uidFamilia+"");
-
         final DocumentReference integranteFamiliaRef = grupoFamiiaRef.collection("miembros").document(uid+"");
 
-        Map<String, Object> nestedData = new HashMap<>();
-        nestedData.put("tipo","creador");
-        nestedData.put("funcion","padre");
-        nestedData.put("fecha", new Timestamp(new Date()));
+        Map<String, Object> data = new HashMap<>();
+        data.put("tipo","creador");
+        data.put("funcion","padre");
+        data.put("fecha", new Timestamp(new Date()));
 
-        integranteFamiliaRef.set(nestedData, SetOptions.merge())
+        integranteFamiliaRef.set(data, SetOptions.merge())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         //Log.d(TAG, "DocumentSnapshot successfully updated!");
                         Toast.makeText(CrearFamiliaActivity.this, "Familia Creada", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(CrearFamiliaActivity.this, PerfilActivity.class));
+                        startActivity(new Intent(CrearFamiliaActivity.this, FamiliaActivity.class));
                         finish();
                     }
                 })
